@@ -1,0 +1,300 @@
+//ALARMS
+OnOffscreen
+{
+    //I've tinkered a lot with this function to get it working for multiple characters. If you need more than 2, just copy the format below very carefully, and make sure you increment the numbers. It's not perfect; if you have multiple characters off screen at once it might pick the wrong dialogues, but you can add more elseifs to handle those cases if you really want them.
+    offscreen = TOSTR(reference0)
+    CVSTR(reference0)
+    CVSTR(reference1)
+
+    if "0" _in_ reference0 //Checks if the sakura was moved off screen
+    {
+        CatStatus = "off"
+    }
+    elseif "1" _in_ reference0 //Checks if the kero was moved off screen
+    {
+        DogStatus = "off"
+    }
+	elseif "2" _in_reference0
+	{
+		OtterStatus = "off"
+	}
+	elseif "3" _in_reference0
+	{
+		PenguinStatus = "off"
+	}
+    
+    //Coming back on screen
+    elseif "0" _in_ reference1 //Checks if the sakura is no longer off screen
+    {
+        CatStatus = "out"
+    }
+    elseif "1" _in_ reference1 //Checks if the kero is no longer off screen
+    {
+        DogStatus = "out"
+    }
+	elseif "2" _in_ reference1 //Checks if the kero is no longer off screen
+    {
+        OtterStatus = "out"
+    }
+	elseif "3" _in_ reference1 //Checks if the kero is no longer off screen
+    {
+        PenguinStatus = "out"
+    }
+}
+
+//Off the screen dialogue. Ctrl Shift F12 will bring characters back onto the screen. _argv[0] here contains the number of the character who is off screen, 0 for sakura, 1 for kero, 2 and up for extra chars
+OffscreenTalk
+{
+    if _argv[0] == "0" //If the sakura is off screen
+    {
+        "\0\s[0]I'm off the screen.\w8\w8 You can press Ctrl Shift F12 to bring me back.\e"
+    }
+    elseif _argv[0] == "1" //If the kero is off screen
+    {
+        "\0\s[0]The kero is off the screen.\w8\w8 You can press Ctrl Shift F12 to bring it back.\e"
+    }
+}
+
+//Being brought back on the screen. _argv[0] here contains the number of the character who was brought back on screen, 0 for sakura, 1 for kero, 2 and up for extra chars
+EndOffscreenTalk
+{
+    if _argv[0] == "0" //If the sakura was brought back on screen
+    {
+        CatStatus = "out"
+    }
+    elseif _argv[0] == "1" //If the kero was brought back on screen
+    {
+        DogStatus = "out"
+    }
+    elseif _argv[0] == "2" //If the kero was brought back on screen
+    {
+        OtterStatus = "out"
+    }
+    elseif _argv[0] == "3" //If the kero was brought back on screen
+    {
+        PenguinStatus = "out"
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OnClockAlarm
+{
+	tempclockalarm = reference0
+	reference0 = REPLACE(reference0," ","") //removes spaces
+	reference0 = REPLACE(reference0,":","")
+	
+	if clockalarm < 999
+	{
+		clockalarm = 0 + tempclockalarm
+	}
+	else
+	{
+		clockalarm = tempclockalarm
+	}
+	--
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[0]"
+		}
+		when "dog"
+		{
+			"\1\s[10]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[200]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[300]"
+		}
+	}
+	--
+	"Nice. We've set an alarm for %(clockalarm).\w8\w8 We'll ring you when it's that time!\w8\w8 Just remember that you need to have us open and running at that time!"
+}
+
+OnTimerAlarm
+{
+	timeralarm = reference0
+	reference0 = REPLACE(reference0," ","") //removes spaces
+	reference0 = REPLACE(reference0,":","")
+	reference0 = REPLACE(reference0,".","")
+	
+	--
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[0]"
+		}
+		when "dog"
+		{
+			"\1\s[10]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[200]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[300]"
+		}
+	}
+	--
+	"Awesome!\w8\w8 The timer has been set for %(timeralarm) minutes!\w8\w8 Just remember that if you minimize or close us,\w8 the timer will pause and then resume when we're opened again!"
+}
+
+OnChangeSnooze
+{
+	snoozetime = reference0
+	reference0 = REPLACE(reference0," ","") //removes spaces
+	reference0 = REPLACE(reference0,":","")
+	
+	
+	--
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[0]"
+		}
+		when "dog"
+		{
+			"\1\s[10]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[200]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[300]"
+		}
+	}
+	--
+	"Okay,\w8 so your snooze time has been updated to %(snoozetime).\w8\w8 Just make sure you don't overdo it with that snooze button."
+}
+
+
+
+
+
+
+OnAlarmRing
+{
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[0]"
+		}
+		when "dog"
+		{
+			"\1\s[10]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[200]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[300]"
+		}
+	}
+	--
+	"Hey!\w8\w8 I see your timer just went off!\w8\w8 Come on and turn me off!\w8\w8 You set this alarm for a reason.\w8\w8 You better not snooze this.\n\n\![*]\q[Snooze it!,SnoozeYes]          \![*]\q[Alarm Recieved!,SnoozeNo]"
+}
+
+
+Select.SnoozeYes
+{
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[4]"
+		}
+		when "dog"
+		{
+			"\1\s[104]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[204]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[304]"
+		}
+	}
+	--
+	"Ugh, whatever.\w8\w8 Your alarm's been delayed by %(snoozetime) minutes.\w8\w8 This better be for a good reason"
+	timeralarm = snoozetime
+}
+Select.SnoozeNo
+{
+	case ANY(Present)
+	{
+		when "cat"
+		{
+			"\0\s[5]"
+		}
+		when "dog"
+		{
+			"\1\s[105]"
+		}
+		when "otter"
+		{
+			"\p[3]\s[205]"
+		}
+		when "penguin"
+		{
+			"\p[4]\s[305]"
+		}
+	}
+	--
+	"Wonderful!\w8\w8 I hope this alarm served you well!\w8\w8 Use it again if you need!"
+	--
+	timeralarm = 0
+	timercountmin = 0
+	timercountsec = 0	
+}
+
+
+
+OnAlarmClock
+{
+	"Just remember that you need to enter it in as military time with no colons.\![open,inputbox,OnClockAlarm,-1]\c"
+}
+
+OnAlarmTimer
+{
+	"Just remember to put the time in as minutes.\w8\w8 So if you want a three hour timer, \w8 input 180 only!\![open,inputbox,OnTimerAlarm,-1]\c"
+}
+
+OnSnoozeChange
+{
+	"So you want to change how much time your snooze is set for?\w8\w8 Just make sure you enter in the time by minutes, so just type 20 for twenty minutes.\![open,inputbox,OnChangeSnooze,-1]\c"
+}
